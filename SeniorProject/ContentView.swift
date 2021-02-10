@@ -10,30 +10,58 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-      ZStack{
-         Color("BackgroundColor")
-         Image("BackgroundImage")
-         .resizable()
-         .scaledToFill()
-         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-         .opacity(0.7)
-         .blur(radius: /*@START_MENU_TOKEN@*/3.0/*@END_MENU_TOKEN@*/)
-         VStack {
-            TitleView()
-            Spacer()
-            RefrigeratorView()
-            OvenView()
-            ACView()
-            HeatingView()
-            ComputerView()
-            RoundedRectangle(cornerRadius: 25, style: .continuous)
-               .fill(Color.white)
-               .frame(width: 300, height: 3)
-               .offset(y: -50)
-               .opacity(0.6)
-            SettingsView()
-         }
-      }.edgesIgnoringSafeArea(.all)
+      NavigationView {
+         ZStack{
+            Color("BackgroundColor")
+            Image("BackgroundImage")
+            .resizable()
+            .scaledToFill()
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+            .opacity(0.7)
+            .blur(radius: /*@START_MENU_TOKEN@*/3.0/*@END_MENU_TOKEN@*/)
+            VStack {
+               TitleView() //UTD Title
+               Spacer()    //Put the buttons at the bottom of screen and title at the top
+               
+               NavigationLink(destination: House()) {
+                  Text("House")
+                  .modifier(ButtonModifiers()) //Custom button modifiers
+               }//Add button to link to House page
+               
+               NavigationLink(destination: Dishwasher()) {
+                  Text("Dishwasher")
+                  .modifier(ButtonModifiers()) //Custom button modifiers
+               }//Add button to link to Dishwasher page
+               
+               NavigationLink(destination: Furnace()) {
+                  Text("Furnace")
+                  .modifier(ButtonModifiers()) //Custom button modifiers
+               }//Add button to link to Furnace page
+               
+               NavigationLink(destination: HomeOffice()) {
+                  Text("HomeOffice")
+                  .modifier(ButtonModifiers()) //Custom button modifiers
+               }//Add button to link to HomeOffice page
+               
+               NavigationLink(destination: Refrigerator()) {
+                  Text(/*@START_MENU_TOKEN@*/"Refrigerator"/*@END_MENU_TOKEN@*/)
+                  .modifier(ButtonModifiers()) //Custom button modifiers
+               }//Add button to link to Refrigerator page
+               
+               RoundedRectangle(cornerRadius: 25, style: .continuous)
+                  .fill(Color.white)
+                  .frame(width: 300, height: 3)
+                  .opacity(0.6)
+               
+               NavigationLink(destination: Settings()) {
+                  Text("Settings")
+                  .modifier(ButtonModifiers()) //Custom button modifiers
+               }//Add button to link to Settings page
+               
+               SpacerView()
+            }
+         }.edgesIgnoringSafeArea(.all)
+      }
    }
 }
 
@@ -46,7 +74,6 @@ struct ButtonModifiers: ViewModifier {
          .background(/*@START_MENU_TOKEN@*/Color.blue/*@END_MENU_TOKEN@*/)
          .cornerRadius(10)
          .padding(10)
-         .offset(y: -50)
    }
 }
 
@@ -60,56 +87,12 @@ struct TitleView: View {
    }
 }
 
-struct RefrigeratorView: View {
+struct SpacerView: View {
    var body: some View {
       Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-         Text(/*@START_MENU_TOKEN@*/"Refrigerator"/*@END_MENU_TOKEN@*/)
-         .modifier(ButtonModifiers())
-      }
-   }
-}
-
-struct OvenView: View {
-   var body: some View {
-      Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-         Text("Oven")
-         .modifier(ButtonModifiers())
-      }
-   }
-}
-
-struct ACView: View {
-   var body: some View {
-      Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-         Text("Air Conditioner")
-         .modifier(ButtonModifiers())
-      }
-   }
-}
-
-struct HeatingView: View {
-   var body: some View {
-      Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-         Text("Central Heating")
-         .modifier(ButtonModifiers())
-      }
-   }
-}
-
-struct ComputerView: View {
-   var body: some View {
-      Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-         Text("Computer")
-         .modifier(ButtonModifiers())
-      }
-   }
-}
-
-struct SettingsView: View {
-   var body: some View {
-      Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-         Text("Settings")
-         .modifier(ButtonModifiers())
+         Text("")
+         .frame(width: 350.0, height: 40.0)
+         .hidden()
       }
    }
 }
