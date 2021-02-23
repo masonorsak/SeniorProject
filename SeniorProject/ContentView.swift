@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct ContentView: View {
+   @State private var selectedLink: Int? = nil
+   
     var body: some View {
       NavigationView {
          ZStack{
@@ -19,46 +21,62 @@ struct ContentView: View {
                   .offset(y: 7)
                ScrollView {      //Allow scrolling through buttons
                   VStack {       //Vertically align links
-                     NavigationLink(destination: House()) {
+                     // House DetailView button
+                     NavigationLink(
+                        destination: DetailView(selected: 0).environmentObject(AppData()),
+                           tag: 0,
+                           selection: $selectedLink)
+                     {
                         Text("House")
-                        .modifier(ButtonModifiers()) //Custom button modifiers
-                     }//Add button to link to House page
+                        .modifier(ButtonModifiers())
+                     } //Custom button modifiers
                      
-                     NavigationLink(destination: Dishwasher()) {
+                     // Dishwasher DetailView button
+                     NavigationLink(
+                        destination: DetailView(selected: 1).environmentObject(AppData()),
+                           tag: 1,
+                           selection: $selectedLink)
+                     {
                         Text("Dishwasher")
-                        .modifier(ButtonModifiers()) //Custom button modifiers
-                     }//Add button to link to Dishwasher page
+                        .modifier(ButtonModifiers())
+                     } //Custom button modifiers
                      
-                     NavigationLink(destination: Furnace()) {
+                     // Furnace DetailView button
+                     NavigationLink(
+                        destination: DetailView(selected: 2).environmentObject(AppData()),
+                           tag: 2,
+                           selection: $selectedLink)
+                     {
                         Text("Furnace")
-                        .modifier(ButtonModifiers()) //Custom button modifiers
-                     }//Add button to link to Furnace page
+                        .modifier(ButtonModifiers())
+                     } //Custom button modifiers
                      
-                     NavigationLink(destination: HomeOffice()) {
+                     // Home Office DetailView button
+                     NavigationLink(
+                        destination: DetailView(selected: 3).environmentObject(AppData()),
+                           tag: 3,
+                           selection: $selectedLink)
+                     {
                         Text("Home Office")
-                        .modifier(ButtonModifiers()) //Custom button modifiers
-                     }//Add button to link to HomeOffice page
+                        .modifier(ButtonModifiers())
+                     } //Custom button modifiers
                      
-                     NavigationLink(destination: Refrigerator()) {
-                        Text(/*@START_MENU_TOKEN@*/"Refrigerator"/*@END_MENU_TOKEN@*/)
-                        .modifier(ButtonModifiers()) //Custom button modifiers
-                     }//Add button to link to Refrigerator page
-                        
-                     // ******* TEMP BUTTONS FOR TESTING, OKAY TO DELETE *******
-                        NavigationLink(destination: Refrigerator()) {
-                           Text("Sample")
-                           .modifier(ButtonModifiers()) //Custom button modifiers
-                        }//Add button to link to Refrigerator page
-                        NavigationLink(destination: Refrigerator()) {
-                           Text("Temp")
-                           .modifier(ButtonModifiers()) //Custom button modifiers
-                        }//Add button to link to Refrigerator page
-                     // ******* TEMP BUTTONS FOR TESTING, OKAY TO DELETE *******
+                     // Refrigerator DetailView button
+                     NavigationLink(
+                        destination: DetailView(selected: 4).environmentObject(AppData()),
+                           tag: 4,
+                           selection: $selectedLink)
+                     {
+                        Text("Refrigerator")
+                        .modifier(ButtonModifiers())
+                     } //Custom button modifiers
                      
                   } //End VStack
                } //End ScrollView
                DividerView()     //Bottom of ScrollView
                   .offset(y: -10)
+               
+               // Settings button with its own view (Settings.swift)
                NavigationLink(destination: Settings()) {
                   Text("Settings")
                   .modifier(ButtonModifiers()) //Custom button modifiers

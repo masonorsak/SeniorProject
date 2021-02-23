@@ -7,12 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A93950225D391FC0070523A /* Refrigerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A93950125D391FC0070523A /* Refrigerator.swift */; };
-		1A93950625D3B9790070523A /* House.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A93950525D3B9790070523A /* House.swift */; };
-		1A93950825D3C0460070523A /* Dishwasher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A93950725D3C0460070523A /* Dishwasher.swift */; };
-		1A93950A25D3C1170070523A /* Furnace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A93950925D3C1170070523A /* Furnace.swift */; };
-		1A93950C25D3C1C70070523A /* HomeOffice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A93950B25D3C1C70070523A /* HomeOffice.swift */; };
-		1A93950E25D3C2660070523A /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A93950D25D3C2660070523A /* Settings.swift */; };
+		1A14E7D125E473F900F9A886 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A14E7D025E473F800F9A886 /* Settings.swift */; };
+		1AD75B2F25E44E420071E2CE /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD75B2E25E44E420071E2CE /* DetailView.swift */; };
+		1AD75B3425E44F8B0071E2CE /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD75B3325E44F8B0071E2CE /* AppData.swift */; };
 		1AF0E5C425D252AB004EF0DB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF0E5C325D252AB004EF0DB /* AppDelegate.swift */; };
 		1AF0E5C625D252AB004EF0DB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF0E5C525D252AB004EF0DB /* SceneDelegate.swift */; };
 		1AF0E5C825D252AB004EF0DB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF0E5C725D252AB004EF0DB /* ContentView.swift */; };
@@ -41,12 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1A93950125D391FC0070523A /* Refrigerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refrigerator.swift; sourceTree = "<group>"; };
-		1A93950525D3B9790070523A /* House.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = House.swift; sourceTree = "<group>"; };
-		1A93950725D3C0460070523A /* Dishwasher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dishwasher.swift; sourceTree = "<group>"; };
-		1A93950925D3C1170070523A /* Furnace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Furnace.swift; sourceTree = "<group>"; };
-		1A93950B25D3C1C70070523A /* HomeOffice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeOffice.swift; sourceTree = "<group>"; };
-		1A93950D25D3C2660070523A /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		1A14E7D025E473F800F9A886 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		1AD75B2E25E44E420071E2CE /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		1AD75B3325E44F8B0071E2CE /* AppData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppData.swift; sourceTree = "<group>"; };
 		1AF0E5C025D252AB004EF0DB /* SeniorProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SeniorProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AF0E5C325D252AB004EF0DB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1AF0E5C525D252AB004EF0DB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -113,13 +107,10 @@
 			children = (
 				1AF0E5C325D252AB004EF0DB /* AppDelegate.swift */,
 				1AF0E5C525D252AB004EF0DB /* SceneDelegate.swift */,
+				1AD75B3325E44F8B0071E2CE /* AppData.swift */,
 				1AF0E5C725D252AB004EF0DB /* ContentView.swift */,
-				1A93950125D391FC0070523A /* Refrigerator.swift */,
-				1A93950525D3B9790070523A /* House.swift */,
-				1A93950725D3C0460070523A /* Dishwasher.swift */,
-				1A93950925D3C1170070523A /* Furnace.swift */,
-				1A93950B25D3C1C70070523A /* HomeOffice.swift */,
-				1A93950D25D3C2660070523A /* Settings.swift */,
+				1AD75B2E25E44E420071E2CE /* DetailView.swift */,
+				1A14E7D025E473F800F9A886 /* Settings.swift */,
 				1AF0E5C925D252AE004EF0DB /* Assets.xcassets */,
 				1AF0E5CE25D252AE004EF0DB /* LaunchScreen.storyboard */,
 				1AF0E5D125D252AE004EF0DB /* Info.plist */,
@@ -285,15 +276,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A93950C25D3C1C70070523A /* HomeOffice.swift in Sources */,
+				1A14E7D125E473F900F9A886 /* Settings.swift in Sources */,
 				1AF0E5C425D252AB004EF0DB /* AppDelegate.swift in Sources */,
-				1A93950225D391FC0070523A /* Refrigerator.swift in Sources */,
+				1AD75B2F25E44E420071E2CE /* DetailView.swift in Sources */,
+				1AD75B3425E44F8B0071E2CE /* AppData.swift in Sources */,
 				1AF0E5C625D252AB004EF0DB /* SceneDelegate.swift in Sources */,
-				1A93950625D3B9790070523A /* House.swift in Sources */,
-				1A93950A25D3C1170070523A /* Furnace.swift in Sources */,
-				1A93950E25D3C2660070523A /* Settings.swift in Sources */,
 				1AF0E5C825D252AB004EF0DB /* ContentView.swift in Sources */,
-				1A93950825D3C0460070523A /* Dishwasher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
