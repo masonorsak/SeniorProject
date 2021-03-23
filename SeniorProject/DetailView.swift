@@ -9,40 +9,161 @@
 import SwiftUI
 
 struct DetailView: View {
-   @EnvironmentObject var appData: AppData   // Instance that holds our data
-   @State var menuTitle = "Energy Use"       // Currently selected data to display
-   @State var results: [TaskEntry] = []
-   var selected: Int                         // What machine were examining (house, fride, etc)
-   
-   
+   @EnvironmentObject var appData: AppData         // Instance that holds our data
+   @State var menuTitle: String = "Energy Use"     // Currently selected data to display, by default is energy use
+   @State var deviceResults: [DeviceData] = []     // Array of DeviceData objects loaded from RDS
+   @State var weatherResults: [WeatherData] = []   // Array of WeatjerData objects loaded from RDS
+   var selected: Int                               // What machine were examining (house, fridge, etc) as a int
    
    // Main view that organizes each element on the screen
    var body: some View {
+      // Place items on z axis, aka on top of one another from back of phone to front
       ZStack{
-         Color("BackgroundColor")
+         Color("BackgroundColor")   // Give the view a grey background color as defined in Assets
+         
+         // Align these items on y axis from top of screen to bottom
          VStack{
-//            Text("\(appData.curView[selected].title)")   // Page title
-//               .font(.system(size: 50))
-//               .fontWeight(.bold)
-//               .foregroundColor(.white)
-//               .frame(width: 300, height: 0)
-//            pickerMenu // Display data type list
-            List(results) { TaskEntry in
-               VStack(alignment: .leading){
-                  //if (TaskEntry.DeviceID != nil && TaskEntry.DeviceType != nil && TaskEntry.HouseID != nil) {
-                  Text("DeviceID: " + String(TaskEntry.DeviceID!))
-                  Text("DeviceType: " + getDeviceType(Device: TaskEntry.DeviceType!))
-                  //}
+            let curDevice = getDeviceType(Device: selected)   // What device we are on (house, fridge) as a string
+            // Measurements that we are making, will be held in picker view
+            let measurements = ["Energy Use", "Temperature", "Humidity", "Pressure", "Wind Speed", "Dew Point"]
+            
+            // Header displaying what device we are on
+            Text(curDevice)
+               .font(.system(size: 50))
+               .fontWeight(.bold)
+               .foregroundColor(.white)
+               .padding(.top, 100)
+               .padding(.bottom, -50)
+            
+            // Allow user to select what data they want to see in a picker view
+            Picker("Select Data", selection: $menuTitle) {
+               ForEach(measurements, id: \.self) {
+                  Text($0)
+                     .fontWeight(.bold)
+                     .foregroundColor(.white)
                }
-            }.onAppear {
-               AppData().loadData { (response) in
-                  self.results = response
-               }
+            }
+            
+            // Display what the user has selected from picker view for debugging
+            Text("You selected: \(menuTitle)")
+               .fontWeight(.bold)
+               .foregroundColor(.white)
+            
+            // If we have selected a device and not weather data then show that data
+            if menuTitle == "Energy Use" {
+               List(deviceResults) { DeviceData in    // for every device data row make a list entry
+                  VStack(alignment: .leading){        // align data entrys vertically
+                     
+                     // Depack the optional device data variables and if its not nil then display it
+                     if let deviceDataId = DeviceData.DeviceDataID {
+                        Text("DeviceDataID: " + String(deviceDataId))
+                     } else {
+                        Text("DeviceDataID: nil")
+                     }
+                     
+                     if let deviceId = DeviceData.Device_DeviceID {
+                        Text("DeviceID: " + String(deviceId))
+                     } else {
+                        Text("DeviceID: nil")
+                     }
+
+                     if let time = DeviceData.time {
+                        Text("Time: " + String(time))
+                     } else {
+                        Text("Time: nil")
+                     }
+
+                     if let energy = DeviceData.energyUse {
+                        Text("Energy Use: " + String(energy))
+                     } else {
+                        Text("Energy Use: nil")
+                     }
+
+                     if let anom = DeviceData.anomaly {
+                        Text("Anomaly: " + String(anom))
+                     } else {
+                        Text("Anomaly: nil")
+                     }
+
+                  } // end VStack
+               } // end List
+            } else {
+               List(weatherResults) { WeatherData in    // for every weather data row make a list entry
+                  VStack(alignment: .leading){          // align data entrys vertically
+                     
+                     // Depack the optional weather data variables and if its not nil then display it
+                     if let weatherId = WeatherData.WeatherID {
+                        Text("WeatherID: " + String(weatherId))
+                     } else {
+                        Text("WeatherID: nil")
+                     }
+
+                     if let cityId = WeatherData.CityData_CityID {
+                        Text("CityDataID: " + String(cityId))
+                     } else {
+                        Text("CityDataID: nil")
+                     }
+
+                     if let time = WeatherData.time {
+                        Text("Time: " + String(time))
+                     } else {
+                        Text("Time: nil")
+                     }
+                     
+                     // If we have selected this measurement then show its data after depacking optionals
+                     switch menuTitle {
+                     case "Temperature":
+                        if let temp = WeatherData.temp {
+                           Text("Temp: " + String(temp))
+                        } else {
+                           Text("Temp: nil")
+                        }
+                     case "Humidity":
+                        if let hum = WeatherData.humidity {
+                           Text("Humidity: " + String(hum))
+                        } else {
+                           Text("Humidity: nil")
+                        }
+                     case "Pressure":
+                        if let pressure = WeatherData.pressure {
+                           Text("Pressure: " + String(pressure))
+                        } else {
+                           Text("Pressure: nil")
+                        }
+                     case "Wind Speed":
+                        if let wind = WeatherData.windSpeed {
+                           Text("Wind Speed: " + String(wind))
+                        } else {
+                           Text("Wind Speed: nil")
+                        }
+                     case "Dew Point":
+                        if let dew = WeatherData.dewPoint {
+                           Text("Dew Point: " + String(dew))
+                        } else {
+                           Text("Dew Point: nil")
+                        }
+                     default:
+                        Text("Error: Picker View menu title contained invalid data")
+                     } // end switch
+
+                  } // end VStack
+               } // end List
+            } // end weather data display
+         }.onAppear {
+            // Load device data from AppData.swift api call
+            appData.loadDeviceData { (response) in
+               self.deviceResults = response
+            }
+            // Load weather data from AppData.swift api call
+            appData.loadWeatherData { (response) in
+               self.weatherResults = response
             }
          }
       }.edgesIgnoringSafeArea(.all)
    }
    
+   // Take device type from database and return a string for what that
+   // device is, see chart in project details doc for encoding scheme
    func getDeviceType(Device: Int) -> String {
       switch Device {
       case 1:
@@ -52,7 +173,7 @@ struct DetailView: View {
       case 3:
          return "Gen [kW]"
       case 4:
-         return "House Overall"
+         return "House"
       case 5:
          return "Dishwasher"
       case 6:
@@ -60,7 +181,7 @@ struct DetailView: View {
       case 7:
          return "Home Office"
       case 8:
-         return "Fridge"
+         return "Refrigerator"
       case 9:
          return "Wine Cellar"
       case 10:
@@ -79,33 +200,6 @@ struct DetailView: View {
          return "Type Unknown"
       }
    }
-   
-   // Select what data we want to view for this machine
-//   var pickerMenu: some View {
-//      VStack {
-//         // Array of different data for the current
-//         let allDataTypes = [
-//            appData.curView[selected].typeOfData.energyUse.dataType,
-//            appData.curView[selected].typeOfData.temperature.dataType,
-//            appData.curView[selected].typeOfData.humidity.dataType,
-//            appData.curView[selected].typeOfData.visibility.dataType,
-//            appData.curView[selected].typeOfData.pressure.dataType
-//         ] // array of different data types for this machine
-//
-//         // Picker menu displaying the options
-//         Picker("Select Data", selection: $menuTitle) {
-//            ForEach(allDataTypes, id: \.self) {
-//               Text($0)
-//                  .fontWeight(.bold)
-//                  .foregroundColor(.white)
-//            }
-//         }
-//         // Temp text to display selection
-//         Text("You selected: \(menuTitle)")
-//            .fontWeight(.bold)
-//            .foregroundColor(.white)
-//      }
-//   }
 }
 
 
@@ -113,7 +207,7 @@ struct DetailView: View {
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
       NavigationView {
-         DetailView(selected: 0).environmentObject(AppData())
+         DetailView(selected: 4).environmentObject(AppData(selected: 1))
       }
     }
 }

@@ -23,8 +23,8 @@ struct ContentView: View {
                   VStack {       //Vertically align links
                      // House DetailView button
                      NavigationLink(
-                        destination: DetailView(selected: 0).environmentObject(AppData()),
-                           tag: 0,
+                        destination: DetailView(selected: 4).environmentObject(AppData(selected: 1)),
+                           tag: 4,
                            selection: $selectedLink)
                      {
                         Text("House")
@@ -33,28 +33,18 @@ struct ContentView: View {
                      
                      // Dishwasher DetailView button
                      NavigationLink(
-                        destination: DetailView(selected: 1).environmentObject(AppData()),
-                           tag: 1,
+                        destination: DetailView(selected: 5).environmentObject(AppData(selected: 2)),
+                           tag: 5,
                            selection: $selectedLink)
                      {
                         Text("Dishwasher")
                         .modifier(ButtonModifiers())
                      } //Custom button modifiers
                      
-                     // Furnace DetailView button
-                     NavigationLink(
-                        destination: DetailView(selected: 2).environmentObject(AppData()),
-                           tag: 2,
-                           selection: $selectedLink)
-                     {
-                        Text("Furnace")
-                        .modifier(ButtonModifiers())
-                     } //Custom button modifiers
-                     
                      // Home Office DetailView button
                      NavigationLink(
-                        destination: DetailView(selected: 3).environmentObject(AppData()),
-                           tag: 3,
+                        destination: DetailView(selected: 7).environmentObject(AppData(selected: 3)),
+                           tag: 7,
                            selection: $selectedLink)
                      {
                         Text("Home Office")
@@ -63,11 +53,41 @@ struct ContentView: View {
                      
                      // Refrigerator DetailView button
                      NavigationLink(
-                        destination: DetailView(selected: 4).environmentObject(AppData()),
-                           tag: 4,
+                        destination: DetailView(selected: 8).environmentObject(AppData(selected: 4)),
+                           tag: 8,
                            selection: $selectedLink)
                      {
                         Text("Refrigerator")
+                        .modifier(ButtonModifiers())
+                     } //Custom button modifiers
+                     
+                     // Kitchen DetailView button
+                     NavigationLink(
+                        destination: DetailView(selected: 11).environmentObject(AppData(selected: 5)),
+                           tag: 11,
+                           selection: $selectedLink)
+                     {
+                        Text("Kitchen")
+                        .modifier(ButtonModifiers())
+                     } //Custom button modifiers
+                     
+                     // Microwave DetailView button
+                     NavigationLink(
+                        destination: DetailView(selected: 14).environmentObject(AppData(selected: 6)),
+                           tag: 14,
+                           selection: $selectedLink)
+                     {
+                        Text("Microwave")
+                        .modifier(ButtonModifiers())
+                     } //Custom button modifiers
+                     
+                     // Living Room DetailView button
+                     NavigationLink(
+                        destination: DetailView(selected: 15).environmentObject(AppData(selected: 7)),
+                           tag: 15,
+                           selection: $selectedLink)
+                     {
+                        Text("Living Room")
                         .modifier(ButtonModifiers())
                      } //Custom button modifiers
                      
