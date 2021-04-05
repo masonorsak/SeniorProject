@@ -13,6 +13,7 @@ struct DetailView: View {
    @State var menuTitle: String = "Energy Use"     // Currently selected data to display, by default is energy use
    @State var deviceResults: [DeviceData] = []     // Array of DeviceData objects loaded from RDS
    @State var weatherResults: [WeatherData] = []   // Array of WeatjerData objects loaded from RDS
+   var avgData: [Float] = []
    var selected: Int                               // What machine were examining (house, fridge, etc) as a int
    
    // Main view that organizes each element on the screen
@@ -49,8 +50,53 @@ struct DetailView: View {
                .fontWeight(.bold)
                .foregroundColor(.white)
             
+            let avgEnergy = deviceResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.average)
+               //print(tmp)
+               return tmp
+            })
+            
+            let avgTemp = weatherResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.tempavg)
+               //print(tmp)
+               return tmp
+            })
+            
+            let avgHumidity = weatherResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.humidityavg)
+               //print(tmp)
+               return tmp
+            })
+            
+            let avgPressure = weatherResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.pressureavg)
+               //print(tmp)
+               return tmp
+            })
+            
+            let avgWindSpeed = weatherResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.windspeedavg)
+               //print(tmp)
+               return tmp
+            })
+            
+            let avgDewPoint = weatherResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.dewpointavg)
+               //print(tmp)
+               return tmp
+            })
+            
+            
+            
             // If we have selected a device and not weather data then show that data
             if menuTitle == "Energy Use" {
+               
+               LineGraph(dataPoints: avgEnergy.normalized)
+                  .stroke(Color.green, lineWidth: 2)
+                  .aspectRatio(16/9, contentMode: .fit)
+                  .border(Color.gray, width: 1)
+                  .padding()
+               
                List(deviceResults) { DeviceData in    // for every device data row make a list entry
                   VStack(alignment: .leading){        // align data entrys vertically
                      
@@ -72,7 +118,7 @@ struct DetailView: View {
                      } else {
                         Text("Time: nil")
                      }
-
+                     
                      if let average = DeviceData.average {
                         Text("Average Energy Use: " + String(average))
                      } else {
@@ -82,6 +128,52 @@ struct DetailView: View {
                   } // end VStack
                } // end List
             } else {
+               
+               switch menuTitle {
+               case "Temperature":
+                  
+                  LineGraph(dataPoints: avgTemp.normalized)
+                     .stroke(Color.green, lineWidth: 2)
+                     .aspectRatio(16/9, contentMode: .fit)
+                     .border(Color.gray, width: 1)
+                     .padding()
+                  
+               case "Humidity":
+                  
+                  LineGraph(dataPoints: avgHumidity.normalized)
+                     .stroke(Color.green, lineWidth: 2)
+                     .aspectRatio(16/9, contentMode: .fit)
+                     .border(Color.gray, width: 1)
+                     .padding()
+                  
+               case "Pressure":
+                  
+                  LineGraph(dataPoints: avgPressure.normalized)
+                     .stroke(Color.green, lineWidth: 2)
+                     .aspectRatio(16/9, contentMode: .fit)
+                     .border(Color.gray, width: 1)
+                     .padding()
+                  
+               case "Wind Speed":
+                  
+                  LineGraph(dataPoints: avgWindSpeed.normalized)
+                     .stroke(Color.green, lineWidth: 2)
+                     .aspectRatio(16/9, contentMode: .fit)
+                     .border(Color.gray, width: 1)
+                     .padding()
+                  
+               case "Dew Point":
+                  
+                  LineGraph(dataPoints: avgDewPoint.normalized)
+                     .stroke(Color.green, lineWidth: 2)
+                     .aspectRatio(16/9, contentMode: .fit)
+                     .border(Color.gray, width: 1)
+                     .padding()
+                  
+               default:
+                  Text("Error: Picker View menu title contained invalid data")
+               } // end switch
+               
                List(weatherResults) { WeatherData in    // for every weather data row make a list entry
                   VStack(alignment: .leading){          // align data entrys vertically
                      
@@ -196,7 +288,36 @@ struct DetailView: View {
    }
 }
 
+struct LineGraph: Shape {
+    var dataPoints: [CGFloat]
 
+    func path(in rect: CGRect) -> Path {
+        func point(at ix: Int) -> CGPoint {
+            let point = dataPoints[ix]
+            let x = rect.width * CGFloat(ix) / CGFloat(dataPoints.count - 1)
+            let y = (1-point) * rect.height
+            return CGPoint(x: x, y: y)
+        }
+
+        return Path { p in
+            guard dataPoints.count > 1 else { return }
+            let start = dataPoints[0]
+            p.move(to: CGPoint(x: 0, y: (1-start) * rect.height))
+            for idx in dataPoints.indices {
+                p.addLine(to: point(at: idx))
+            }
+        }
+    }
+}
+
+extension Array where Element == CGFloat {
+   var normalized: [CGFloat] {
+      if let min = self.min(), let max = self.max() {
+         return self.map { ($0 - min) / (max - min)}
+      }
+      return []
+   }
+}
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {

@@ -13,10 +13,10 @@ import SwiftUI
 // Identifiable so we can easily loop through data
 struct DeviceData: Codable, Identifiable{
    let id = UUID()            // Needed for identifiable as looping id
-   var avgid: Int?            // Primary key of device data monthly average table
-   var device_deviceid: Int?  // Foreign key to device table
-   var time: Int?             // Unix time pulled from database
-   var average: Float?        // Average energy use over a one hour period
+   var avgid: Int            // Primary key of device data monthly average table
+   var device_deviceid: Int  // Foreign key to device table
+   var time: Int             // Unix time pulled from database
+   var average: Float        // Average energy use over a one hour period
 }
 
 // Holds our hourly average weather data for the past month
@@ -24,14 +24,14 @@ struct DeviceData: Codable, Identifiable{
 // Identifiable so we can easily loop through data
 struct WeatherData: Codable, Identifiable{
    let id = UUID()            // Needed for identifiable as looping id
-   var avgid: Int?            // Primary key of weather data montly average table
-   var citydata_cityid: Int?  // Foreign key of city table
-   var time: Int?             // Unix time pulled from database
-   var tempavg: Float?        // Average temperature over an hour
-   var humidityavg: Float?    // Average humidity over an hour
-   var pressureavg: Float?    // Average pressure over an hour
-   var windspeedavg: Float?   // Average wind speed over an hour
-   var dewpointavg: Float?    // Average dew point over an hour
+   var avgid: Int            // Primary key of weather data montly average table
+   var citydata_cityid: Int  // Foreign key of city table
+   var time: Int             // Unix time pulled from database
+   var tempavg: Float        // Average temperature over an hour
+   var humidityavg: Float    // Average humidity over an hour
+   var pressureavg: Float    // Average pressure over an hour
+   var windspeedavg: Float   // Average wind speed over an hour
+   var dewpointavg: Float    // Average dew point over an hour
 }
 
 class AppData: ObservableObject {
