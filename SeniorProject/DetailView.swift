@@ -55,13 +55,13 @@ struct DetailView: View {
                   VStack(alignment: .leading){        // align data entrys vertically
                      
                      // Depack the optional device data variables and if its not nil then display it
-                     if let deviceDataId = DeviceData.DeviceDataID {
-                        Text("DeviceDataID: " + String(deviceDataId))
+                     if let AvgID = DeviceData.avgid {
+                        Text("Average ID: " + String(AvgID))
                      } else {
-                        Text("DeviceDataID: nil")
+                        Text("Average ID: nil")
                      }
                      
-                     if let deviceId = DeviceData.Device_DeviceID {
+                     if let deviceId = DeviceData.device_deviceid {
                         Text("DeviceID: " + String(deviceId))
                      } else {
                         Text("DeviceID: nil")
@@ -73,16 +73,10 @@ struct DetailView: View {
                         Text("Time: nil")
                      }
 
-                     if let energy = DeviceData.energyUse {
-                        Text("Energy Use: " + String(energy))
+                     if let average = DeviceData.average {
+                        Text("Average Energy Use: " + String(average))
                      } else {
-                        Text("Energy Use: nil")
-                     }
-
-                     if let anom = DeviceData.anomaly {
-                        Text("Anomaly: " + String(anom))
-                     } else {
-                        Text("Anomaly: nil")
+                        Text("Average Energy Use: nil")
                      }
 
                   } // end VStack
@@ -92,13 +86,13 @@ struct DetailView: View {
                   VStack(alignment: .leading){          // align data entrys vertically
                      
                      // Depack the optional weather data variables and if its not nil then display it
-                     if let weatherId = WeatherData.WeatherID {
-                        Text("WeatherID: " + String(weatherId))
+                     if let AvgID = WeatherData.avgid {
+                        Text("Average ID: " + String(AvgID))
                      } else {
-                        Text("WeatherID: nil")
+                        Text("Average ID: nil")
                      }
 
-                     if let cityId = WeatherData.CityData_CityID {
+                     if let cityId = WeatherData.citydata_cityid {
                         Text("CityDataID: " + String(cityId))
                      } else {
                         Text("CityDataID: nil")
@@ -113,31 +107,31 @@ struct DetailView: View {
                      // If we have selected this measurement then show its data after depacking optionals
                      switch menuTitle {
                      case "Temperature":
-                        if let temp = WeatherData.temp {
+                        if let temp = WeatherData.tempavg {
                            Text("Temp: " + String(temp))
                         } else {
                            Text("Temp: nil")
                         }
                      case "Humidity":
-                        if let hum = WeatherData.humidity {
+                        if let hum = WeatherData.humidityavg {
                            Text("Humidity: " + String(hum))
                         } else {
                            Text("Humidity: nil")
                         }
                      case "Pressure":
-                        if let pressure = WeatherData.pressure {
+                        if let pressure = WeatherData.pressureavg {
                            Text("Pressure: " + String(pressure))
                         } else {
                            Text("Pressure: nil")
                         }
                      case "Wind Speed":
-                        if let wind = WeatherData.windSpeed {
+                        if let wind = WeatherData.windspeedavg {
                            Text("Wind Speed: " + String(wind))
                         } else {
                            Text("Wind Speed: nil")
                         }
                      case "Dew Point":
-                        if let dew = WeatherData.dewPoint {
+                        if let dew = WeatherData.dewpointavg {
                            Text("Dew Point: " + String(dew))
                         } else {
                            Text("Dew Point: nil")
