@@ -17,8 +17,19 @@ struct ContentView: View {
             WallpaperView()      //Add background
             VStack {
                TitleView()       //UTD Title
+               
+               NavigationLink(
+                  destination: WeatherView().environmentObject(AppData(selected: 0)),
+                     tag: 3,
+                     selection: $selectedLink)
+               {
+                  Text("Weather")
+                  .modifier(ButtonModifiers())
+               } //Custom button modifiers
+               
                DividerView()     //Top of ScrollView
                   .offset(y: 7)
+               
                ScrollView {      //Allow scrolling through buttons
                   VStack {       //Vertically align links
                      // House DetailView button
