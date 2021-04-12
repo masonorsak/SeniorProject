@@ -31,8 +31,8 @@ struct WeatherView: View {
                .font(.system(size: 50))
                .fontWeight(.bold)
                .foregroundColor(.white)
-               .padding(.top, 100)
-               .padding(.bottom, -50)
+               .padding(.top, 50)
+               .padding(.bottom, -70)
             
             // Allow user to select what data they want to see in a picker view
             Picker("Select Data", selection: $menuTitle) {
@@ -43,10 +43,8 @@ struct WeatherView: View {
                }
             }
             
-            // Display what the user has selected from picker view for debugging
-            Text("You selected: \(menuTitle)")
-               .fontWeight(.bold)
-               .foregroundColor(.white)
+            DividerView()     // Rectangle marking visual top of ScrollView
+               .offset(y: 7)
             
             // convert monthly data floats to CGFloats
             let avgTemp = weatherResults.map({ (data) -> CGFloat in
@@ -109,99 +107,19 @@ struct WeatherView: View {
                //print(tmp)
                return tmp
             })
-               
+            
+            // Display our graphs depending on what measurement we have selected
             switch menuTitle {
             case "Temperature":
-               
-               ScrollView {      //Allow scrolling through graphs
-                  VStack {       //Vertically align graphs
-                     
-                     LineGraph(dataPoints: avgTemp.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                     
-                     LineGraph(dataPoints: temp.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                  }
-               }
-               
+               displayGraph(monthData: avgTemp.normalized, dayData: temp.normalized)
             case "Humidity":
-               
-               ScrollView {      //Allow scrolling through graphs
-                  VStack {       //Vertically align graphs
-                     LineGraph(dataPoints: avgHumidity.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                     
-                     LineGraph(dataPoints: humidity.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                  }
-               }
-               
+               displayGraph(monthData: avgHumidity.normalized, dayData: humidity.normalized)
             case "Pressure":
-               
-               ScrollView {      //Allow scrolling through graphs
-                  VStack {       //Vertically align graphs
-                     LineGraph(dataPoints: avgPressure.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                     
-                     LineGraph(dataPoints: pressure.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                  }
-               }
-               
+               displayGraph(monthData: avgPressure.normalized, dayData: pressure.normalized)
             case "Wind Speed":
-               
-               ScrollView {      //Allow scrolling through graphs
-                  VStack {       //Vertically align graphs
-                     LineGraph(dataPoints: avgWindSpeed.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                     
-                     LineGraph(dataPoints: windSpeed.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                  }
-               }
-               
+               displayGraph(monthData: avgWindSpeed.normalized, dayData: windSpeed.normalized)
             case "Dew Point":
-               
-               ScrollView {      //Allow scrolling through graphs
-                  VStack {       //Vertically align graphs
-                     LineGraph(dataPoints: avgDewPoint.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                     
-                     LineGraph(dataPoints: dewPoint.normalized)
-                        .stroke(Color.green, lineWidth: 2)
-                        .frame(width:400, height:300)
-                        .border(Color.gray, width: 1)
-                        .padding()
-                  }
-               }
-               
+               displayGraph(monthData: avgDewPoint.normalized, dayData: dewPoint.normalized)
             default:
                Text("Error: Picker View menu title contained invalid data")
             } // end switch
@@ -218,50 +136,96 @@ struct WeatherView: View {
       }.edgesIgnoringSafeArea(.all)
    }
    
-   // Take device type from database and return a string for what that
-   // device is, see chart in project details doc for encoding scheme
-   func getDeviceType(Device: Int) -> String {
-      switch Device {
-      case 1:
-         return "Time"
-      case 2:
-         return "Use [kW]"
-      case 3:
-         return "Gen [kW]"
-      case 4:
-         return "House"
-      case 5:
-         return "Dishwasher"
-      case 6:
-         return "Furnace"
-      case 7:
-         return "Home Office"
-      case 8:
-         return "Refrigerator"
-      case 9:
-         return "Wine Cellar"
-      case 10:
-         return "Garage Door"
-      case 11:
-         return "Kitchen"
-      case 12:
-         return "Barn"
-      case 13:
-         return "Well"
-      case 14:
-         return "Microwave"
-      case 15:
-         return "Living Room"
-      default:
-         return "Type Unknown"
-      }
-   }
-}
+   // function that builds our graph views
+   @ViewBuilder func displayGraph(monthData: [CGFloat], dayData: [CGFloat]) -> some View{
+      let screenWidth = UIScreen.main.bounds.size.width - 20
+      ScrollView {      //Allow scrolling through graphs
+         VStack {       //Vertically align graphs
+            
+            // Label the month graph
+            Text("Month " + menuTitle)
+               .font(.system(size: 20))
+               .fontWeight(.bold)
+               .foregroundColor(.white)
+               .padding(.top, 20)
+               .padding(.bottom, -10)
+            
+            // Plot the monthly data
+            LineGraph(dataPoints: monthData.normalized)
+               .stroke(Color.green, lineWidth: 2)
+               .frame(width:screenWidth, height:300)
+               .border(Color.gray, width: 1)
+               .padding()
+            
+            calcAverage(avgData: monthData) // find average of monthly data
+            
+            // Label the day graph
+            Text("24 Hour " + menuTitle)
+               .font(.system(size: 20))
+               .fontWeight(.bold)
+               .foregroundColor(.white)
+               .padding(.top, 20)
+               .padding(.bottom, -10)
+            
+            // Plot the daily data
+            LineGraph(dataPoints: dayData.normalized)
+               .stroke(Color.green, lineWidth: 2)
+               .frame(width:screenWidth, height:300)
+               .border(Color.gray, width: 1)
+               .padding()
+            
+            calcAverage(avgData: dayData) // find average of daily data
+            
+            // temporary padding from bottom of the view cause im bad at swift
+            Text("")
+               .padding(50)
+         } // end vstack
+      } // end scroll view
+   } // end displayGraph
+   
+   // function that calulates average of our CGFloat arrays
+   @ViewBuilder func calcAverage(avgData: [CGFloat]) -> some View{
+      // Horizontally organize our min, max, and average
+      HStack {
+         // Use built in swift min function, unwrap value and display it
+         if let monthMin = Float(avgData.min() ?? 0.0) {
+            let format = String(format: "Min: %.4f", monthMin)
+            Text(format)
+               .foregroundColor(.white)
+         }
+         
+         // Use built in swift max function, unwrap value and display it
+         if let monthMax = Float(avgData.max() ?? 0.0) {
+            let format = String(format: "Max: %.4f", monthMax)
+            Text(format)
+               .foregroundColor(.white)
+         }
+         
+         // Swift has no built in average function, so build our own
+         let sumArray = avgData.reduce(0, +)  // get sum of values
+         let countArray = avgData.count       // get count of values
+         // when view is loaded, before our data loads from api,
+         // the array item count is 0, so we must check before
+         // divinding by zero
+         if countArray != 0 {
+            // calculate the average and unwrap optional then display
+            if let monthAvg = Float(sumArray) / Float(countArray) {
+               let format = String(format: "Avg: %.4f", monthAvg)
+               Text(format)
+                  .foregroundColor(.white)
+            }
+         } else {
+            Text("Avg: 0.0000")
+               .foregroundColor(.white)
+         }
+      } // end HStack
+   } // end calcAverage
+} // end WeatherView
 
 struct WeatherView_Previews: PreviewProvider {
     static var previews: some View {
       NavigationView {
-         WeatherView()
+         WeatherView().environmentObject(AppData(selected: 1))
       }
     }
 }
