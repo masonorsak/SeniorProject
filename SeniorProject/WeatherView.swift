@@ -9,9 +9,10 @@
 import SwiftUI
 
 struct WeatherView: View {
-   @EnvironmentObject var appData: AppData         // Instance that holds our data
-   @State var menuTitle: String = "Temperature"    // Currently selected data to display, by default is energy use
-   @State var weatherResults: [WeatherData] = []   // Array of WeatjerData objects loaded from RDS
+   @EnvironmentObject var appData: AppData               // Instance that holds our data
+   @State var menuTitle: String = "Temperature"          // Currently selected data to display, by default is energy use
+   @State var weatherResults: [WeatherData] = []         // Array of WeatherData objects loaded from RDS
+   @State var weatherDayResults: [WeatherDayData] = []   // Array of WeatherDayData objects loaded from RDS
    var avgData: [Float] = []
    
    // Main view that organizes each element on the screen
@@ -47,7 +48,7 @@ struct WeatherView: View {
                .fontWeight(.bold)
                .foregroundColor(.white)
             
-            
+            // convert monthly data floats to CGFloats
             let avgTemp = weatherResults.map({ (data) -> CGFloat in
                let tmp = CGFloat(data.tempavg)
                //print(tmp)
@@ -77,104 +78,141 @@ struct WeatherView: View {
                //print(tmp)
                return tmp
             })
+            
+            // convert daily data floats to CGFloats
+            let temp = weatherDayResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.temp)
+               //print(tmp)
+               return tmp
+            })
+            
+            let humidity = weatherDayResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.humidity)
+               //print(tmp)
+               return tmp
+            })
+            
+            let pressure = weatherDayResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.pressure)
+               //print(tmp)
+               return tmp
+            })
+            
+            let windSpeed = weatherDayResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.windSpeed)
+               //print(tmp)
+               return tmp
+            })
+            
+            let dewPoint = weatherDayResults.map({ (data) -> CGFloat in
+               let tmp = CGFloat(data.dewPoint)
+               //print(tmp)
+               return tmp
+            })
                
             switch menuTitle {
             case "Temperature":
                
-               LineGraph(dataPoints: avgTemp.normalized)
-                  .stroke(Color.green, lineWidth: 2)
-                  .frame(width:400, height:300)
-                  .border(Color.gray, width: 1)
-                  .padding()
+               ScrollView {      //Allow scrolling through graphs
+                  VStack {       //Vertically align graphs
+                     
+                     LineGraph(dataPoints: avgTemp.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                     
+                     LineGraph(dataPoints: temp.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                  }
+               }
                
             case "Humidity":
                
-               LineGraph(dataPoints: avgHumidity.normalized)
-                  .stroke(Color.green, lineWidth: 2)
-                  .frame(width:400, height:300)
-                  .border(Color.gray, width: 1)
-                  .padding()
+               ScrollView {      //Allow scrolling through graphs
+                  VStack {       //Vertically align graphs
+                     LineGraph(dataPoints: avgHumidity.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                     
+                     LineGraph(dataPoints: humidity.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                  }
+               }
                
             case "Pressure":
                
-               LineGraph(dataPoints: avgPressure.normalized)
-                  .stroke(Color.green, lineWidth: 2)
-                  .frame(width:400, height:300)
-                  .border(Color.gray, width: 1)
-                  .padding()
+               ScrollView {      //Allow scrolling through graphs
+                  VStack {       //Vertically align graphs
+                     LineGraph(dataPoints: avgPressure.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                     
+                     LineGraph(dataPoints: pressure.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                  }
+               }
                
             case "Wind Speed":
                
-               LineGraph(dataPoints: avgWindSpeed.normalized)
-                  .stroke(Color.green, lineWidth: 2)
-                  .frame(width:400, height:300)
-                  .border(Color.gray, width: 1)
-                  .padding()
+               ScrollView {      //Allow scrolling through graphs
+                  VStack {       //Vertically align graphs
+                     LineGraph(dataPoints: avgWindSpeed.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                     
+                     LineGraph(dataPoints: windSpeed.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                  }
+               }
                
             case "Dew Point":
                
-               LineGraph(dataPoints: avgDewPoint.normalized)
-                  .stroke(Color.green, lineWidth: 2)
-                  .frame(width:400, height:300)
-                  .border(Color.gray, width: 1)
-                  .padding()
+               ScrollView {      //Allow scrolling through graphs
+                  VStack {       //Vertically align graphs
+                     LineGraph(dataPoints: avgDewPoint.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                     
+                     LineGraph(dataPoints: dewPoint.normalized)
+                        .stroke(Color.green, lineWidth: 2)
+                        .frame(width:400, height:300)
+                        .border(Color.gray, width: 1)
+                        .padding()
+                  }
+               }
                
             default:
                Text("Error: Picker View menu title contained invalid data")
             } // end switch
-            
-            List(weatherResults) { WeatherData in    // for every weather data row make a list entry
-               VStack(alignment: .leading){          // align data entrys vertically
-                  
-                  // Depack the optional weather data variables and if its not nil then display it
-                  if let time = WeatherData.time {
-                     Text("Time: " + String(time))
-                  } else {
-                     Text("Time: nil")
-                  }
-                  
-                  // If we have selected this measurement then show its data after depacking optionals
-                  switch menuTitle {
-                  case "Temperature":
-                     if let temp = WeatherData.tempavg {
-                        Text("Temp: " + String(temp))
-                     } else {
-                        Text("Temp: nil")
-                     }
-                  case "Humidity":
-                     if let hum = WeatherData.humidityavg {
-                        Text("Humidity: " + String(hum))
-                     } else {
-                        Text("Humidity: nil")
-                     }
-                  case "Pressure":
-                     if let pressure = WeatherData.pressureavg {
-                        Text("Pressure: " + String(pressure))
-                     } else {
-                        Text("Pressure: nil")
-                     }
-                  case "Wind Speed":
-                     if let wind = WeatherData.windspeedavg {
-                        Text("Wind Speed: " + String(wind))
-                     } else {
-                        Text("Wind Speed: nil")
-                     }
-                  case "Dew Point":
-                     if let dew = WeatherData.dewpointavg {
-                        Text("Dew Point: " + String(dew))
-                     } else {
-                        Text("Dew Point: nil")
-                     }
-                  default:
-                     Text("Error: Picker View menu title contained invalid data")
-                  } // end switch
-
-               } // end VStack
-            } // end List
          }.onAppear {
-            // Load weather data from AppData.swift api call
+            // Load monthly weather data from AppData.swift api call
             appData.loadWeatherData { (response) in
                self.weatherResults = response
+            }
+            // Load daily weather data from AppData.swift api call
+            appData.loadWeatherDayData { (response) in
+               self.weatherDayResults = response
             }
          }
       }.edgesIgnoringSafeArea(.all)
