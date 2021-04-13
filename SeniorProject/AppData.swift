@@ -46,6 +46,14 @@ struct DayData: Codable, Identifiable{
    var anomaly: Int?           // if this time slot has an anomaly
 }
 
+struct AnomalyData: Codable{
+   var DeviceDataID: Int?      // Primary key of device data
+   var Device_DeviceID: Int?   // Foreign key to device table
+   var time: Int?              // Unix time pulled from database
+   var energyUse: Float?       // energy over one minute
+   var anomaly: Int?           // if this time slot has an anomaly
+}
+
 // Holds our weather data for the past day
 // Codable so it can holds JSON data from api call
 // Identifiable so we can easily loop through data
@@ -132,26 +140,26 @@ class AppData: ObservableObject {
       .resume()
    }
    
-//   // Make api call to the device we've selected and load data into our DeviceData structure
-//   func loadAnomalyData(completion: @escaping ([DayData]) -> ()) {
-//      // Api endpoint url for device data
-//      guard let device_url = URL(string: "https://xkvpwwf8kb.execute-api.us-east-2.amazonaws.com/prd/anomaly/" + String(select)) else {
-//         print("Your API end point is invalid for Device")
-//         return
-//      }
-//
-//      // Make api call
-//      URLSession.shared.dataTask(with: device_url) { (data, _, _) in
-//         // Decode the JSON file into an array of DeviceData objects
-//         let response = try! JSONDecoder().decode([DayData].self, from: data!)
-//
-//         // Asyncronously make api call so we can interact with the app while data is loading
-//         DispatchQueue.main.async {
-//            completion(response) // Return array of DeviceData objects
-//         }
-//      }
-//      .resume()
-//   }
+   // Make api call to the device we've selected and load data into our DeviceData structure
+   func loadAnomalyData(completion: @escaping ([AnomalyData]) -> ()) {
+      // Api endpoint url for device data
+      guard let device_url = URL(string: "https://xkvpwwf8kb.execute-api.us-east-2.amazonaws.com/prd/anomaly/" + String(select)) else {
+         print("Your API end point is invalid for Device")
+         return
+      }
+
+      // Make api call
+      URLSession.shared.dataTask(with: device_url) { (data, _, _) in
+         // Decode the JSON file into an array of DeviceData objects
+         let response = try! JSONDecoder().decode([AnomalyData].self, from: data!)
+         print(response)
+         // Asyncronously make api call so we can interact with the app while data is loading
+         DispatchQueue.main.async {
+            completion(response) // Return array of DeviceData objects
+         }
+      }
+      .resume()
+   }
    
    // Make api call to the weather data table and load data into our WeatherData structure
    func loadWeatherDayData(completion: @escaping ([WeatherDayData]) -> ()) {

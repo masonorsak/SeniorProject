@@ -12,7 +12,7 @@ struct DetailView: View {
    @EnvironmentObject var appData: AppData         // Instance that holds our data
    @State var deviceResults: [DeviceData] = []     // Array of DeviceData objects loaded from RDS
    @State var dayResults: [DayData] = []           // Array of DayData objects loaded from RDS
-   //@State var anomalyResults: [DayData] = []       // Array of DayData objects loaded from RDS
+   @State var anomalyResults: [AnomalyData] = []       // Array of DayData objects loaded from RDS
    var avgData: [Float] = []
    var selected: Int                               // What machine were examining (house, fridge, etc) as a int
    
@@ -46,18 +46,24 @@ struct DetailView: View {
             })
             
 //            let anomaly = anomalyResults.map({ (data) -> CGFloat in
-//               let temp = CGFloat(0)
-//               if let tmp = data.anomaly {
-//                  let temp = CGFloat(tmp)
-//               }
-//               //print(tmp)
+//               let temp = CGFloat(data.anomaly)
 //               return temp
 //            })
+            
+            let anomaly = anomalyResults.map({ (data) -> CGFloat in
+               var temp = CGFloat(0)
+               if let tmp = data.anomaly {
+                  temp = CGFloat(tmp)
+               }
+               print(temp)
+               return temp
+            })
+            
             
             DividerView()     // Rectangle marking visual top of ScrollView
                .offset(y: 7)
             
-            displayGraph(monthData: avgEnergy, dayData: energyuse)
+            displayGraph(monthData: avgEnergy, dayData: energyuse, anomalyData: anomaly)
          }.onAppear {
             // Load device data from AppData.swift api call
             appData.loadDeviceData { (response) in
@@ -117,7 +123,7 @@ struct DetailView: View {
    }
    
    // function that builds our graph views
-   @ViewBuilder func displayGraph(monthData: [CGFloat], dayData: [CGFloat]) -> some View{
+   @ViewBuilder func displayGraph(monthData: [CGFloat], dayData: [CGFloat], anomalyData: [CGFloat]) -> some View{
       let screenWidth = UIScreen.main.bounds.size.width - 20
       ScrollView {      //Allow scrolling through graphs
          VStack {       //Vertically align graphs
@@ -156,7 +162,14 @@ struct DetailView: View {
             
             calcAverage(avgData: dayData) // find average of daily data
             
-//            LineGraph(dataPoints: anomaly.normalized)
+//            // Label the day graph
+//            Text("Month of Anomalies")
+//               .font(.system(size: 20))
+//               .fontWeight(.bold)
+//               .foregroundColor(.white)
+//               .padding(.top, 20)
+//               .padding(.bottom, -10)
+//            LineGraph(dataPoints: anomalyData.normalized)
 //               .stroke(Color.green, lineWidth: 2)
 //               .frame(width:400, height:300)
 //               .border(Color.gray, width: 1)
