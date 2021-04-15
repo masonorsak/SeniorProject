@@ -12,8 +12,7 @@ struct DetailView: View {
    @EnvironmentObject var appData: AppData         // Instance that holds our data
    @State var deviceResults: [DeviceData] = []     // Array of DeviceData objects loaded from RDS
    @State var dayResults: [DayData] = []           // Array of DayData objects loaded from RDS
-   @State var anomalyResults: [AnomalyData] = []       // Array of DayData objects loaded from RDS
-   var avgData: [Float] = []
+   @State var anomalyResults: [AnomalyData] = []   // Array of DayData objects loaded from RDS
    var selected: Int                               // What machine were examining (house, fridge, etc) as a int
    
    // Main view that organizes each element on the screen
@@ -33,36 +32,23 @@ struct DetailView: View {
                .foregroundColor(.white)
                .padding(.top, 100)
             
-            // map the floats to CG floats so we can graph them
-            let avgEnergy = deviceResults.map({ (data) -> CGFloat in
-               let tmp = CGFloat(data.average)
-               return tmp
-            })
+            // map the month of floats to CG floats so we can graph them
+            let avgEnergy = deviceResults.map {CGFloat($0.average)}
             
-            // map the floats to CG floats so we can graph them
-            let energyuse = dayResults.map({ (data) -> CGFloat in
-               let tmp = CGFloat(data.energyUse)
-               return tmp
-            })
+            // map the day of floats to CG floats so we can graph them
+            let energyuse = dayResults.map {CGFloat($0.energyUse)}
             
-//            let anomaly = anomalyResults.map({ (data) -> CGFloat in
-//               let temp = CGFloat(data.anomaly)
-//               return temp
-//            })
+            // populate missing times in anomaly data with no detected anomaly
+            let tempAnomData = fillAnom(AnomData: anomalyResults)
             
-            let anomaly = anomalyResults.map({ (data) -> CGFloat in
-               var temp = CGFloat(0)
-               if let tmp = data.anomaly {
-                  temp = CGFloat(tmp)
-               }
-               print(temp)
-               return temp
-            })
-            
+            // unwrap the optional anomaly values and cast them to CGFloats
+            let anomaly1 = tempAnomData.compactMap { $0.anomaly }
+            let anomaly = anomaly1.map {CGFloat($0)}
             
             DividerView()     // Rectangle marking visual top of ScrollView
                .offset(y: 7)
             
+            // display the three graphs on the page, month, day, and anomaly
             displayGraph(monthData: avgEnergy, dayData: energyuse, anomalyData: anomaly)
          }.onAppear {
             // Load device data from AppData.swift api call
@@ -75,10 +61,10 @@ struct DetailView: View {
                self.dayResults = response
             }
             
-//            // Load day device data from AppData.swift api call
-//            appData.loadAnomalyData { (response) in
-//               self.anomalyResults = response
-//            }
+            // Load day device data from AppData.swift api call
+            appData.loadAnomalyData { (response) in
+               self.anomalyResults = response
+            }
          }
       }.edgesIgnoringSafeArea(.all)
    }
@@ -122,11 +108,49 @@ struct DetailView: View {
       }
    }
    
+   // the anomaly data returned only has the data associated with anomalies,
+   // in order for the graph to make sense we have to full the rest of the
+   // time series with anomaly value 0 instead of null
+   func fillAnom(AnomData: [AnomalyData]) -> [AnomalyData] {
+      var blankAnom: [AnomalyData] = [] // array of AnomalyData that will hold our new time series
+      
+      // if the anomaly data hasnt loaded yet from API then return to avoid index out of bound error
+      if(AnomData.count <= 0) {
+         return blankAnom
+      }
+      
+      let time = 1452084509 // time of one month earlier
+      let count = time...(time + 43800) // make array holding one month of unix times
+      
+      // fill the blankAnom array with the time data and 0 anomaly
+      for number in count {
+         let temp = AnomalyData(DeviceDataID: 0, Device_DeviceID: 0, time: number, energyUse: 0, anomaly: 0)
+         blankAnom.append(temp)
+      }
+      
+      let count2 = 0...(blankAnom.count - 1) // all indexes for blankAnom array
+      let count3 = 0...(AnomData.count - 1) // all indexes fir AnomData array
+      
+      // loop through blankAnom indexes
+      for number in count2 {
+         // loop through AnomData indexes
+         for number2 in count3 {
+            // if we have found an anomaly time then change the new arrays anomaly value
+            if AnomData[number2].time == blankAnom[number].time {
+               blankAnom[number].anomaly = AnomData[number2].anomaly
+            }
+         }
+      }
+      
+      return blankAnom
+   }
+   
    // function that builds our graph views
    @ViewBuilder func displayGraph(monthData: [CGFloat], dayData: [CGFloat], anomalyData: [CGFloat]) -> some View{
       let screenWidth = UIScreen.main.bounds.size.width - 20
       ScrollView {      //Allow scrolling through graphs
          VStack {       //Vertically align graphs
+            
             
             // Label the month graph
             Text("Month Energy Use")
@@ -162,18 +186,19 @@ struct DetailView: View {
             
             calcAverage(avgData: dayData) // find average of daily data
             
-//            // Label the day graph
-//            Text("Month of Anomalies")
-//               .font(.system(size: 20))
-//               .fontWeight(.bold)
-//               .foregroundColor(.white)
-//               .padding(.top, 20)
-//               .padding(.bottom, -10)
-//            LineGraph(dataPoints: anomalyData.normalized)
-//               .stroke(Color.green, lineWidth: 2)
-//               .frame(width:400, height:300)
-//               .border(Color.gray, width: 1)
-//               .padding()
+            //Print("Drawing anomalies")
+            // Label the day graph
+            Text("Month of Anomalies")
+               .font(.system(size: 20))
+               .fontWeight(.bold)
+               .foregroundColor(.white)
+               .padding(.top, 20)
+               .padding(.bottom, -10)
+            LineGraph(dataPoints: anomalyData)
+               .stroke(Color.green, lineWidth: 2)
+               .frame(width:400, height:300)
+               .border(Color.gray, width: 1)
+               .padding()
             
             // temporary padding from bottom of the view cause im bad at swift
             Text("")
@@ -221,9 +246,17 @@ struct DetailView: View {
    } // end calcAverage
 }
 
+// Helper function for debugging, allows printing to console from within a view
+extension View {
+    func Print(_ vars: Any...) -> some View {
+        for v in vars { print(v) }
+        return EmptyView()
+    }
+}
+
 struct LineGraph: Shape {
     var dataPoints: [CGFloat]
-
+   
     func path(in rect: CGRect) -> Path {
         func point(at ix: Int) -> CGPoint {
             let point = dataPoints[ix]

@@ -46,11 +46,12 @@ struct DayData: Codable, Identifiable{
    var anomaly: Int?           // if this time slot has an anomaly
 }
 
-struct AnomalyData: Codable{
-   var DeviceDataID: Int?      // Primary key of device data
-   var Device_DeviceID: Int?   // Foreign key to device table
-   var time: Int?              // Unix time pulled from database
-   var energyUse: Float?       // energy over one minute
+struct AnomalyData: Codable, Identifiable, Hashable{
+   let id = UUID()            // Needed for identifiable as looping id
+   var DeviceDataID: Int      // Primary key of device data
+   var Device_DeviceID: Int   // Foreign key to device table
+   var time: Int              // Unix time pulled from database
+   var energyUse: Float       // energy over one minute
    var anomaly: Int?           // if this time slot has an anomaly
 }
 
@@ -152,7 +153,7 @@ class AppData: ObservableObject {
       URLSession.shared.dataTask(with: device_url) { (data, _, _) in
          // Decode the JSON file into an array of DeviceData objects
          let response = try! JSONDecoder().decode([AnomalyData].self, from: data!)
-         print(response)
+         //print(response)
          // Asyncronously make api call so we can interact with the app while data is loading
          DispatchQueue.main.async {
             completion(response) // Return array of DeviceData objects
