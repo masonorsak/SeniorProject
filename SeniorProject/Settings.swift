@@ -8,22 +8,25 @@
 import SwiftUI
 import UIKit
 import SafariServices
+import MessageUI
 
 struct Settings: View {
     @State private var selectedLink: Int? = nil
     var body: some View {
         NavigationView {
-            ZStack {
-               WallpaperView()
-
-                VStack {
-                    Button(action: {
-                           UIApplication.shared.open(URL(string:
-                    "http://www.apple.com/")!)
-                    }){
-                        Text("Log In").modifier(ButtonModifiers())
-
-                    }
+           ZStack{
+              WallpaperView()      //Add background
+              VStack {
+                 TitleView()       //UTD Title
+                 
+                 NavigationLink(
+                    destination: Login().environmentObject(AppData(selected: 0)),
+                       tag: 3,
+                       selection: $selectedLink)
+                 {
+                    Text("Login")
+                    .modifier(ButtonModifiers())
+                 }
                     Button(action: {
                         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
                     }){
@@ -35,10 +38,12 @@ struct Settings: View {
                         Text("Adjust Notifications").modifier(ButtonModifiers())
                     }
                     Button(action: {
-                           UIApplication.shared.open(URL(string:
-                    "https://www.twitter.com")!)
+                        let mailURL = URL(string: "message://dhruvmalhotra2020@gmail.com")!
+                        if UIApplication.shared.canOpenURL(mailURL) {
+                            UIApplication.shared.openURL(mailURL)
+                        }
                     }){
-                        Text("Share on Twitter").modifier(ButtonModifiers())
+                        Text("Send us an Email").modifier(ButtonModifiers())
 
                     }
                     Button(action: {
@@ -61,13 +66,14 @@ struct Settings: View {
                         Text("Rate our App").modifier(ButtonModifiers())
 
                     }
-                    Button(action: {
-                           UIApplication.shared.open(URL(string:
-                    "http://www.apple.com/")!)
-                    }){
-                        Text("Log Out").modifier(ButtonModifiers())
-
-                    }
+                NavigationLink(
+                   destination: LogOut().environmentObject(AppData(selected: 0)),
+                      tag: 0,
+                      selection: $selectedLink)
+                {
+                   Text("LogOut")
+                   .modifier(ButtonModifiers())
+                }
                 }
             }.edgesIgnoringSafeArea(.all)
         }
@@ -76,8 +82,13 @@ struct Settings: View {
 
 struct Settings_Previews: PreviewProvider {
     static var previews: some View {
-      NavigationView {
-        Settings()
-      }
+        Group {
+            NavigationView {
+            Settings()
+            }
+            NavigationView {
+                Settings()
+            }
+        }
     }
 }
