@@ -38,6 +38,8 @@ struct DetailView: View {
             // map the day of floats to CG floats so we can graph them
             let energyuse = dayResults.map {CGFloat($0.energyUse)}
             
+            let anomEnergy = anomalyResults.map{CGFloat($0.energyUse)}
+            
             // populate missing times in anomaly data with no detected anomaly
             let tempAnomData = fillAnom(AnomData: anomalyResults)
             
@@ -49,7 +51,7 @@ struct DetailView: View {
                .offset(y: 7)
             
             // display the three graphs on the page, month, day, and anomaly
-            displayGraph(monthData: avgEnergy, dayData: energyuse, anomalyData: anomaly)
+            displayGraph(monthData: avgEnergy, dayData: energyuse, anomalyData: anomEnergy)
          }.onAppear {
             // Load device data from AppData.swift api call
             appData.loadDeviceData { (response) in
@@ -194,7 +196,7 @@ struct DetailView: View {
                .foregroundColor(.white)
                .padding(.top, 20)
                .padding(.bottom, -10)
-            LineGraph(dataPoints: anomalyData)
+            LineGraph(dataPoints: anomalyData.normalized)
                .stroke(Color.green, lineWidth: 2)
                .frame(width:400, height:300)
                .border(Color.gray, width: 1)
